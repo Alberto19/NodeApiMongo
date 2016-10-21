@@ -4,11 +4,79 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+//mongoose conect
+var db = mongoose.connect('mongodb://localhost/NodeApiMongo').connection;
+db.on('open',function(){
+  console.log('Mongo conectado');
+});
+db.on('error', function(){
+  console.log('Erro no mongo');
+});
+
+var company = mongoose.Schema({
+  name: String,
+  address: {
+    name: String,
+    number: Number,
+    city: String
+  },
+  date: {
+    type: Date,
+    required: true,
+    default: Date.now
+  }
+});
+
+var person = mongoose.Schema({
+  name: {
+    firstname: String,
+    lastname: String
+  }
+});
+
+person.virtual('name.fullname').get(function(){
+  return this.name.firstname.concat(' ').concat(this.name.lastname);
+});
+
+var Person = mongoose.model('Person', person);
+Person.create({
+  name: {
+    firstname: 'Junior',
+    lastname: 'Farias'
+  }, function(err, person) {
+    if(err){
+      console.log('Erro person',err)
+      return
+    }
+    console.log('Person created', person);
+    console.log('Person FullName', person.name.fullname);
+  }
+});
+
+/*var Company = mongoose.model('Company', company);
+
+Company.create({
+  name:'Junior ',
+  address: {
+    name: 'Rua 15',
+    number: 37,
+    city: 'Sao paulo'
+  },
+  date: new Date() 
+}, function(err, company){
+   if(err){
+     console.log(err);
+     return
+   }
+   console.log('Criado com sucesso');
+});*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
