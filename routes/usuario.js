@@ -1,51 +1,60 @@
 var express = require('express');
 var router = express.Router();
-var Person = require('./../models/Person')
+var Usuario = require('./../models/usuario')
 
 //FindAll
 router.get('/', function(req, res, next) {
-  Person.find({}, function(err,Person){
+  Usuario.find({}, function(err,Usuario){
       if(err){
           console.log(err);
           return;
       }
-      res.send(Person);
+      res.send(Usuario);
   });
 });
 
 //FindByID
 router.get('/:id', function(req, res, next) {
-  Person.findById(req.params.id,
-  function(err,Person){
+  Usuario.findById(req.params.id,
+  function(err,Usuario){
           if(err){
           console.log(err);
           return;
       }
-      res.send(Person);
+      res.send(Usuario);
   });
 });
 
 router.post('/', function(req, res, next) {
 
-  var person = new Person({
-    name: {
-        firstname: 'Mae',
-        lastname: 'Farias'
-        },
-    age: 50
+  var usuario = new Usuario({
+    name: 'Junior',
+    login:'Junior@gmail.com',
+    password:'shaudhuhedq',
+    dateLastLogin: Date.now,
+    type:'Nao sei',
+    preferences:[{
+        tipo: 'Rock'
+    }],
+    favorite:[
+        {
+            name: 'Baladas'
+        }
+    ],
+    genre: 'Masculino'
   });
 
-  person.save(person, function(err,person){
+  usuario.save(usuario, function(err,Usuario){
     if(err){
       console.log(err);
       return;
     }
-    res.send(person);
+    res.send(Usuario);
   });
 });
 
 router.put('/:id', function(req, res, next) {
-    Person.findOneAndUpdate({
+    Usuario.findOneAndUpdate({
       _id: req.params.id
     }, 
     {
@@ -55,20 +64,20 @@ router.put('/:id', function(req, res, next) {
       },
     age: 30
     }, 
-    function(err,person){
+    function(err,Usuario){
       if(err){
       console.log(err);
       return;
     }
-    res.send(person);
+    res.send(Usuario);
     });
 });
 
 router.delete('/:id', function(req, res, next) {
-    Person.findOneAndRemove({
+    Usuario.findOneAndRemove({
       _id: req.params.id
     }, 
-    function(err,person){
+    function(err,Usuario){
       if(err){
       console.log(err);
       return;
